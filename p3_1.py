@@ -11,7 +11,7 @@ class Member:
     def __init__(self, name, phone):
         self.name = name
         if not re.fullmatch(r"09\d{9}", phone):
-            raise ValueError("InvalidPhoneError")
+            raise ValueError("Invalid phone number.")
         self.phone = phone
 
     def add_contact(self, section: str):
@@ -24,7 +24,7 @@ class Member:
                 if '|' in line:
                     _, ex_phone = line.split('|', 1)
                     if ex_phone == self.phone:
-                        raise ValueError("PhoneAlreadyExists")
+                        raise ValueError("Phone number already exists in the section.")
             f.write(f"{self.name}|{self.phone}\n")
             print(f"Contact {self.name} added to section {section}.\n--")
 
@@ -41,8 +41,8 @@ class Member:
                 for line in f:
                     if '|' in line:
                         name, phone = line.strip().split('|', 1)
-                        if q_lower in name.lower:
-                            results.append(name, phone)
+                        if q_lower in name.lower():
+                            results.append((name, phone))
         except FileNotFoundError:
             print(f"No contacts found in section {section}.")
             return []
@@ -105,11 +105,9 @@ class Member:
         return results
 
 
-class Delete(Member):
-    def __init__(self, name, phone):
-        super().__init__(name, phone)
 
-    def del_contact(self, section:str):
+    @staticmethod
+    def del_contact(section:str):
         filename = f"{section}.txt"
         with open(filename, "r") as f:
             lines = f.readlines()
@@ -118,8 +116,8 @@ class Delete(Member):
         deleted = 0
         for line in lines:
             if '|' in line:
-                name, phone = line.strip().split('|', 1)
-                if name == self.name:
+                name,phone = line.strip().split('|', 1)
+                if name == name:
                     deleted += 1
                     continue
                 new.append(line)
@@ -128,9 +126,9 @@ class Delete(Member):
             f.writelines(new)
 
         if deleted > 0:
-            print(f"All contacts named {self.name} removed from section {section}.\n")
+            print(f"All contacts named {name} removed from section {section}.\n")
         else:
-            print(f"No contact named {self.name} found in section {section}.")   
+            print(f"No contact named {name} found in section {section}.")   
 
 
 class Backup:
@@ -172,26 +170,47 @@ class Backup:
 #####################################
 def main():
     print("Guidance: add (Research/Training/Support) Ali 0912345678")
-    print("exit for exiting the program")
+    print("   run backup            -> take immediate backup")
+    print("   set AutoBackup ON     -> enable auto backup")
+    print("   set AutoBackup OFF    -> disable auto backup")
+    print("   exit                  -> exit program")
 
+    Backup.start_auto_backup()
     while True:
         try:
             choise = input(">> ").strip()
             parts = choise.split()
 
-            if choise == "exit":
+            if choise.lower() == "exit":
                 sys.exit()
+
+            elif choise.lower() == "run backup":
+                Backup.run_backup()
+
+            elif choise.lower().startswith("set autobackup"):
+                if len(parts) == 3:
+                    Backup.Auto_backup(parts[2])
+                else:
+                    print("Usage: set AutoBackup ON/OFF")
 
             elif len(parts) == 4 and parts[0].lower() == "add":
                 s, n, p = parts[1], parts[2], parts[3]
                 Member(n, p).add_contact(s)
 
+            elif len(parts) == 3 and parts[0].lower() == "del":
+                s, n = parts[1], parts[2]
+                Member.del_contact(s)
+
             elif len(parts) == 2 and parts[0].lower() == "listsearch":
                 s = parts[1]
-                Member.list(s)   
+                Member("", "").list(s)
 
             elif choise.lower() == "list all":
-                Member.all_list()  
+                Member("", "").all_list()
+
+            elif len(parts) == 3 and parts[0].lower() == "search":
+                s, n = parts[1], parts[2]
+                Member(n, "").search(s)
 
             else:
                 print("Invalid input")
@@ -201,17 +220,8 @@ def main():
             continue
 
 
-
-        
-
-
-
-
-
 if __name__ == "__main__":
     main()
-
-
 
 
     
