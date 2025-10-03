@@ -66,7 +66,7 @@ class Member:
                 for line in f:
                     if '|' in line:
                         name, phone = line.strip().split('|', 1)
-                        results.append(name,phone)
+                        results.append((name, phone))
         except FileNotFoundError:
             print(f"No contacts found in section {section}.")
             return []
@@ -80,8 +80,8 @@ class Member:
             print(f"No matching contacts found in section {section}.")
         return results
     
-
-    def all_list(self):
+    @staticmethod
+    def all_list():
         filenames = ['Research.txt','Training.txt','Support.txt']
         results = []
 
@@ -171,25 +171,36 @@ class Backup:
 
 #####################################
 def main():
-
     print("Guidance: add (Research/Training/Support) Ali 0912345678")
     print("exit for exiting the program")
+
     while True:
         try:
             choise = input(">> ").strip()
+            parts = choise.split()
 
             if choise == "exit":
                 sys.exit()
 
-            parts = choise.split()
-            if len(parts) == 4 and parts[0] == "add":
+            elif len(parts) == 4 and parts[0].lower() == "add":
                 s, n, p = parts[1], parts[2], parts[3]
                 Member(n, p).add_contact(s)
+
+            elif len(parts) == 2 and parts[0].lower() == "listsearch":
+                s = parts[1]
+                Member.list(s)   
+
+            elif choise.lower() == "list all":
+                Member.all_list()  
+
             else:
                 print("Invalid input")
+
         except Exception as e:
             print("Error:", e)
             continue
+
+
 
         
 
