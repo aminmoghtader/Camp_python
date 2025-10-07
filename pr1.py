@@ -156,14 +156,106 @@ cal_id_counter = 1
 def valid_username(u):
     return re.fullmatch(r"[A-Za-z0-9_]+", u)
 def valid_pass(p):
-    if len(p) < 5: return False
-    if not re.fullmatch(r"[A-Z]", p): return False
-    if not re.fullmatch(r"[a-z]", p): return False
-    if not re.fullmatch(r"[0-9]", p): return False
+    if len(p) < 5: 
+        return False
+    if not re.search(r"[A-Z]", p):  # شامل حداقل یک حرف بزرگ
+        return False
+    if not re.search(r"[a-z]", p):  # شامل حداقل یک حرف کوچک
+        return False
+    if not re.search(r"[0-9]", p):  # شامل حداقل یک عدد
+        return False
     return True
 
-        
-    
-        
+def main():
+    global current_user, cal_id_counter
+    while True:
+        try:
+            if not current_user:
+                print("Please choose")
+                print("Register for registering a new user")
+                print("Login for logging in")
+                print("Change Password for changing the password")
+                print("Remove for removing a user")
+                print("Show All Usernames for showing all usernames")
+                print("Exit for exiting from the program")
+                cmd = input().strip()
 
+                parts = cmd.split()
+                if parts[0] == "Register" and len(parts) == 3:
+                    u ,p = parts[1], parts[2]
+                    if not valid_username(u) or not valid_pass(p) or u in users:
+                        print("Invalid")
+                    else:
+                        users[u] = {"pass":p, "calendars":[]}
+                        print("successfully")
+
+                elif parts[0]=="Change" and parts[1]=="Password" and len(parts)==5:
+                    u, p, newp = parts[2], parts[3], parts[4]
+                    if u in users and users[u]["pass"] == p and valid_pass(newp):
+                        users[u]["pass"] = newp
+                        print("pass change successfully")
+                    else:
+                        print("invalid change")
+
+                elif parts[0] == "Remove" and len(parts) == 3:
+                    u, p = parts[1], parts[2]
+                    if u in users and users[u]["pass"] == p:
+                        del users[u]
+                        print("user remove successfully")
+                    else:
+                        print("invalid remove")
+
+                elif cmd == "show all":
+                    names = sorted(users.keys())
+                    if names:
+                        for i,(n) in enumerate(names, start=1): 
+                            print(f"{i}) {n}")
+                    else: 
+                        print("nothing")
+                elif cmd == "exit":
+                    break
+
+                elif parts[0] == "Login" and len(parts) == 3:
+                    u, p = parts[1], parts[2]
+                    if u in users and users[u]["pass"] == p:
+                        current_user = u
+                        if not users[u]["calendars"]:
+                            cal = Calendar(cal_id_counter, u)
+                            cal_id_counter += 1
+                            users[u]["calendars"].append(cal)
+                        print("Login successful") 
+                        print("Please choose")
+                        print("Create New Calendar for creating a new calendar")
+                        print("Open Calendar for opening a calendar")
+                        print("Enable Calendar for enabling a calendar")
+                        print("Disable Calendar for disabling a calendar")
+                        print("Delete Calendar for deleting a calendar")
+                        print("Edit Calendar for editing a calendar")
+                        print("ChangeTime for changing time")
+                        print("ChangeDay for changing day")
+                        print("ChangeMonth for changing month")
+                        print("ChangeYear for changing year")
+                        print("Show for showing events")
+                        print("Show Enabled Calendars for showing enabled calendars")
+                        print("Logout for logging out")
+                        cmd = input().strip()
+
+                    else:
+                        ("Invalid input")
+                               
+                  
         
+        except:
+            print("invalid")
+
+
+
+
+if __name__=="__main__":
+    main()                        
+               
+
+     
+    
+      
+      
