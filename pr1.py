@@ -223,22 +223,39 @@ def main():
                             cal = Calendar(cal_id_counter, u)
                             cal_id_counter += 1
                             users[u]["calendars"].append(cal)
-                        print("Login successful") 
-                        print("Please choose")
-                        print("Create New Calendar for creating a new calendar")
-                        print("Open Calendar for opening a calendar")
-                        print("Enable Calendar for enabling a calendar")
-                        print("Disable Calendar for disabling a calendar")
-                        print("Delete Calendar for deleting a calendar")
-                        print("Edit Calendar for editing a calendar")
-                        print("ChangeTime for changing time")
-                        print("ChangeDay for changing day")
-                        print("ChangeMonth for changing month")
-                        print("ChangeYear for changing year")
-                        print("Show for showing events")
-                        print("Show Enabled Calendars for showing enabled calendars")
-                        print("Logout for logging out")
-                        cmd = input().strip()
+                        print("Login successful")
+
+                        while True:
+                            print("Please choose")
+                            print("Create New Calendar for creating a new calendar")
+                            print("Open Calendar for opening a calendar")
+                            print("Enable Calendar for enabling a calendar")
+                            print("Disable Calendar for disabling a calendar")
+                            print("Delete Calendar for deleting a calendar")
+                            print("Edit Calendar for editing a calendar")
+                            print("ChangeTime for changing time")
+                            print("ChangeDay for changing day")
+                            print("ChangeMonth for changing month")
+                            print("ChangeYear for changing year")
+                            print("Show for showing events")
+                            print("Show Enabled Calendars for showing enabled calendars")
+                            print("Logout for logging out")
+
+                            cmd = input().strip()
+                            parts = cmd.split()
+                            if cmd == "logout":
+                                current_user = None
+                                break
+
+                            elif parts[0] == "create new calendar":
+                                
+
+                            
+
+
+
+
+                        
 
                     else:
                         ("Invalid input")
